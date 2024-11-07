@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>StyleMate-AI - 스타일 추천 시스템</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#84fab0',
+                            secondary: '#8fd3f4'
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+<body class="gradient-bg min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-white mb-2">StyleMate-AI</h1>
+            <p class="text-white text-opacity-90">AI 기반 맞춤형 스타일 추천 시스템</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 shadow-xl mb-8">
+            <form id="recommendationForm" class="space-y-6">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" for="height">
+                            키 (cm)
+                        </label>
+                        <input type="number" id="height" name="height" required
+                            class="input-style w-full px-4 py-3 rounded-lg focus:outline-none"
+                            placeholder="170">
+                    </div>
+                
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" for="weight">
+                            몸무게 (kg)
+                        </label>
+                        <input type="number" id="weight" name="weight" required
+                            class="input-style w-full px-4 py-3 rounded-lg focus:outline-none"
+                            placeholder="65">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" for="age">
+                            나이
+                        </label>
+                        <input type="number" id="age" name="age" required
+                            class="input-style w-full px-4 py-3 rounded-lg focus:outline-none"
+                            placeholder="25">
+                    </div>
+                
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" for="gender">
+                            성별
+                        </label>
+                        <select id="gender" name="gender" required
+                            class="input-style w-full px-4 py-3 rounded-lg focus:outline-none">
+                            <option value="" disabled selected>성별을 선택하세요</option>
+                            <option value="남성">남성</option>
+                            <option value="여성">여성</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        체형 사진
+                    </label>
+                    <div class="relative">
+                        <input type="file" id="photo" name="photo" accept="image/*"
+                            class="hidden">
+                        <label for="photo" 
+                            class="cursor-pointer flex items-center justify-center w-full py-3 px-4 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                            <span class="text-gray-600">사진을 업로드하세요</span>
+                        </label>
+                    </div>
+                    <div id="imagePreview" class="hidden mt-4">
+                        <img id="preview" class="mx-auto rounded-lg max-h-64 object-cover">
+                    </div>
+                </div>
+
+                <button type="button" onclick="getRecommendation()" 
+                    class="button-gradient w-full py-3 px-4 rounded-lg text-white font-medium relative">
+                    <span>스타일 추천받기</span>
+                    <div class="loading absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                </button>
+            </form>
+        </div>
+
+        <div id="recommendationResult" class="glass-card rounded-2xl p-8 shadow-xl hidden">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">맞춤 스타일 추천</h2>
+            <div id="recommendationText" class="text-gray-600 leading-relaxed mb-6"></div>
+        
+            <div class="shopping-links">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">추천 스타일 쇼핑하기</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="https://www.musinsa.com" target="_blank" 
+                        class="flex flex-col items-center p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="static/images/musinsa.png" alt="무신사" class="w-12 h-12 mb-2 object-contain">
+                        <span class="text-sm text-gray-700">무신사</span>
+                    </a>
+                    <a href="https://zigzag.kr" target="_blank"
+                        class="flex flex-col items-center p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="static/images/zigzag.png" alt="지그재그" class="w-12 h-12 mb-2 object-contain">
+                        <span class="text-sm text-gray-700">지그재그</span>
+                    </a>
+                    <a href="https://a-bly.com" target="_blank"
+                        class="flex flex-col items-center p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="static/images/abley.png" alt="에이블리" class="w-12 h-12 mb-2 object-contain">
+                        <span class="text-sm text-gray-700">에이블리</span>
+                    </a>
+                    <a href="https://www.brandi.co.kr" target="_blank"
+                        class="flex flex-col items-center p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="static/images/brandi.png" alt="브랜디" class="w-12 h-12 mb-2 object-contain">
+                        <span class="text-sm text-gray-700">브랜디</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('photo').addEventListener('change', function(e) {
+            const preview = document.getElementById('preview');
+            const imagePreview = document.getElementById('imagePreview');
+            const file = e.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function getRecommendation() {
+            const form = document.getElementById('recommendationForm');
+            const formData = new FormData(form);
+            const button = form.querySelector('button');
+            const loading = button.querySelector('.loading');
+            const buttonText = button.querySelector('span');
+            const resultDiv = document.getElementById('recommendationResult');
+
+            buttonText.style.opacity = '0';
+            loading.style.display = 'block';
+            button.disabled = true;
+
+            fetch('/recommend', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('recommendationText').innerHTML = 
+                        `<div class="text-red-500">${data.error}</div>`;
+                } else {
+                    document.getElementById('recommendationText').innerHTML = 
+                        data.recommendation.split('\n').map(line => 
+                            `<p class="mb-2">${line}</p>`
+                        ).join('');
+                }
+                resultDiv.classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('recommendationText').innerHTML = 
+                    '<div class="text-red-500">서버 오류가 발생했습니다. 다시 시도해주세요.</div>';
+                resultDiv.classList.remove('hidden');
+            })
+            .finally(() => {
+                buttonText.style.opacity = '1';
+                loading.style.display = 'none';
+                button.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
