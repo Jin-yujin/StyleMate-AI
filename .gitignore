@@ -1,0 +1,12 @@
+.env
+__pycache__/
+uploads/*
+!uploads/.gitkeep
+*.pyc
+.DS_Store
+venv/
+
+경진대회 신청/남자 정면.jpeg
+경진대회 신청/여자 정면.jpeg
+경진대회 신청/여자 정면2.jpeg
+경진대회 신청/컴정이죠_AI마스터_ChatGPT 기반 AI 실전활용 경진대회 신청-1.pdf
