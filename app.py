@@ -128,6 +128,8 @@ def recommend():
         weight = float(request.form.get('weight'))
         age = int(request.form.get('age'))
         gender = request.form.get('gender')
+        season=request.form.get('season') #계절정보
+        occasion = request.form.get('occasion')  # 상황별 필터 정보 추가
 
         if gender not in ['남성', '여성']:
             return jsonify({'error': '성별을 올바르게 선택해주세요.'}), 400
@@ -155,8 +157,10 @@ def recommend():
             {"role": "system", "content": "당신은 체형 분석과 의상 추천을 해주는 스타일 전문가입니다."},
             {
                 "role": "user",
-                "content": f"키: {height}cm, 몸무게: {weight}kg, 나이: {age}세, 성별: {gender}인 사람에게 어울리는 옷을 추천해주세요. 연령대에 맞는 스타일도 고려해서 추천해주세요."
+                "content": f"키: {height}cm, 몸무게: {weight}kg, 나이: {age}세, 성별: {gender}인 사람이 {season} 계절에 어울리는 옷을 추천해주세요. 연령대에 맞는 스타일도 고려해서 추천해주세요."
+                        f"또한, 상황은 '{occasion}'이며, 이에 맞는 스타일도 고려해서 추천해주세요."
             }
+            
         ]
 
         if prediction:
@@ -167,9 +171,9 @@ def recommend():
                 "role": "user",
                 "content": (
                    f"고객님의 체형 정보는 다음과 같습니다: {', '.join(prediction_text)}. "
-            "이 체형 정보를 바탕으로 허리 단면을 참고해 하의 사이즈(예: 24사이즈 또는 32사이즈)를 추천하고, "
-            "체형에 맞는 스타일링 팁(예: 와이드 핏이 잘 어울리는지, 스트라이프 패턴이 잘 어울리는지)을 포함해서 답변을 주세요."
-             )
+                   "이 체형 정보를 바탕으로 허리 단면을 참고해 하의 사이즈(예: 24사이즈 또는 32사이즈)를 추천하고, "
+                   f"체형과 '{occasion}' 상황에 맞는 스타일링 팁(예: 와이드 핏이 잘 어울리는지, 스트라이프 패턴이 잘 어울리는지)을 포함해서 답변을 주세요."
+                )
             })
 
         response = client.chat.completions.create(
