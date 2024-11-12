@@ -99,7 +99,7 @@ def interpret_prediction(prediction):
         f"하의총장: {prediction[8]:.1f}cm",
         f"밑위: {prediction[9]:.1f}cm"
     ]
-    return ", ".join(features)
+    return features
 
 # 예측 함수 정의
 def predict(image_path, additional_input):
@@ -121,8 +121,6 @@ def predict(image_path, additional_input):
 def index():
     return render_template('index.html')  # index.html 파일 필요
 
-@app.route('/recommend', methods=['POST'])
-@app.route('/recommend', methods=['POST'])
 @app.route('/recommend', methods=['POST'])
 def recommend():
     try:
@@ -164,14 +162,14 @@ def recommend():
         if prediction:
             # 예측된 특징을 해석하여 메시지에 추가
             prediction_text = interpret_prediction(prediction)
+            
             messages.append({
                 "role": "user",
                 "content": (
-                    f"고객님의 체형 정보는 다음과 같습니다: {prediction_text}. "
-                    "이 체형 정보를 답변에 명시적으로 포함하고, 각 수치를 활용하여 맞춤형 추천을 주세요. "
-                    "예를 들어, 어깨너비가 {prediction[0]:.1f}cm이므로 이에 어울리는 상의, "
-                    "허벅지 단면이 {prediction[6]:.1f}cm이므로 이에 어울리는 하의를 추천하는 방식으로 답변을 작성해주세요."
-                )
+                   f"고객님의 체형 정보는 다음과 같습니다: {', '.join(prediction_text)}. "
+            "이 체형 정보를 바탕으로 허리 단면을 참고해 하의 사이즈(예: 24사이즈 또는 32사이즈)를 추천하고, "
+            "체형에 맞는 스타일링 팁(예: 와이드 핏이 잘 어울리는지, 스트라이프 패턴이 잘 어울리는지)을 포함해서 답변을 주세요."
+             )
             })
 
         response = client.chat.completions.create(
@@ -179,7 +177,9 @@ def recommend():
             messages=messages
         )
         recommendation = response.choices[0].message.content
-        return jsonify({'recommendation': recommendation, 'prediction': prediction})
+
+        # JSON 응답으로 예측 결과와 추천 내용을 반환
+        return jsonify({'recommendation': recommendation, 'prediction_text': prediction_text})
         
     except Exception as e:
         return jsonify({'error': f'서버 오류가 발생했습니다: {str(e)}'}), 500

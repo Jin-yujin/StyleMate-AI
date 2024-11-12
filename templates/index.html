@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>StyleMate-AI - 스타일 추천 시스템</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            primary: '#84fab0',
-                            secondary: '#8fd3f4'
-                        }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleMate-AI - 스타일 추천 시스템</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#84fab0',
+                        secondary: '#8fd3f4'
                     }
                 }
             }
-        </script>
-    </head>
+        }
+    </script>
+</head>
 <body class="gradient-bg min-h-screen py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto">
         <div class="text-center mb-12">
