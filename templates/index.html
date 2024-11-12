@@ -190,9 +190,12 @@
                         `<div class="text-red-500">${data.error}</div>`;
                 } else {
                     document.getElementById('recommendationText').innerHTML = 
-                        data.recommendation.split('\n').map(line => 
-                            `<p class="mb-2">${line}</p>`
-                        ).join('');
+                        `<h3 class="text-lg font-semibold mb-4">고객님의 체형 정보는 다음과 같습니다:</h3>
+                         <ul class="list-disc pl-6 mb-4">
+                             ${data.prediction_text.map(feature => `<li>${feature}</li>`).join('')}
+                         </ul>
+                         <h3 class="text-lg font-semibold mb-4">추천 스타일</h3>
+                         ${data.recommendation.split('\n').map(line => `<p class="mb-2">${line}</p>`).join('')}`;
                 }
                 resultDiv.classList.remove('hidden');
             })
